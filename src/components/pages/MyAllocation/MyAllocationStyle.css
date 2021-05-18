@@ -1,0 +1,12 @@
+
+  .dropdown{
+      float: right;
+      margin-top: 7%;
+      margin-right: 30px;
+  }
+.MyAllocation_wrapper{
+  /* width: 80%; */
+  /* display: flex;*/
+  justify-content: center;
+  margin-left: 19%;
+}
