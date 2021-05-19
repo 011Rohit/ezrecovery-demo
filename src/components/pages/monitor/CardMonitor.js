@@ -14,7 +14,7 @@ export default function CardMonitor() {
 
 
     useEffect(() => {
-        Axios.get('http://localhost:3001/getFieldStaffNamesCard')
+        Axios.get('http://ezrecoveryapi.herokuapp.com/getFieldStaffNamesCard')
             .then(res => {
                 if (res.data.success) {
                     setCardData(res.data.data)
@@ -35,15 +35,15 @@ export default function CardMonitor() {
                 <div className="Cardcontainer">
                     {cardData.map((val) => {
                         return (
-                            <Link to={`/app/monitor/details/${val.id}`}><div className="CardForMonitor" key={val.id}>
+                            <Link to={`/app/monitor/details/${val.id}/${val.name}`}><div className="CardForMonitor" key={val.id}>
                                 <div className="CardInsidecontainer">
                                     <h4 className="name"><b>Name : {val.name}</b></h4>
                                     <br />
                                     <h5>Collected</h5>
-                                    <p>₹{val.collectedTillNow} Till Now</p>
+                                    <p>₹ {val.collectedTillNow}</p>
                                     <br />
                                     <h5 >Left to Collect</h5>
-                                    <p>₹{val.leftToCollect}</p>
+                                    <p>₹ {val.leftToCollect}</p>
                                 </div>
                             </div>
                             </Link>

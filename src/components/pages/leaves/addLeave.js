@@ -15,7 +15,7 @@ import { Button } from '@material-ui/core';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import moment from 'moment';
-import {  Tooltip, OverlayTrigger } from '@themesberg/react-bootstrap';
+import { Tooltip, OverlayTrigger } from '@themesberg/react-bootstrap';
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -54,7 +54,7 @@ function AddLeave() {
 
     const insertLeaves = () => {
         setOpen(false)
-        Axios.post('http://localhost:3001/insertLeaves', {
+        Axios.post('http://ezrecoveryapi.herokuapp.com/insertLeaves', {
             start: startDate,
             end: endDate,
             id: localStorage.getItem('id'),
@@ -84,7 +84,7 @@ function AddLeave() {
     }
 
     useEffect(() => {
-        Axios.post('http://localhost:3001/getLeaves', {
+        Axios.post('http://ezrecoveryapi.herokuapp.com/getLeaves', {
             id: localStorage.getItem('id'),
         }).then(res => {
             //setCalendarState(!calendarState)
@@ -116,7 +116,7 @@ function AddLeave() {
 
     return (
         <div className="addLeaveContainer">
-           
+
             <Dialog
                 open={open}
                 TransitionComponent={Transition}
@@ -146,15 +146,15 @@ function AddLeave() {
                 </Alert>
             </Snackbar>
             <div className="head">
-            <OverlayTrigger
-            placement="bottom"
-                trigger={['hover', 'focus']}
-                overlay={
-                    <Tooltip>Select/Drag Dates to add a leave(s)</Tooltip>
-                }>
-            <h5 >Add Leaves</h5>
-           </OverlayTrigger>
-            <h5>Leaves Left = {leftLeaves}</h5>
+                <h5 >Add Leaves</h5>
+                <OverlayTrigger
+                    placement="bottom"
+                    trigger={['hover', 'focus']}
+                    overlay={
+                        <Tooltip>You have {leftLeaves} leaves remaining out of 20 annual leaves</Tooltip>
+                    }>
+                    <h5>Leaves Left = {leftLeaves}/20</h5>
+                </OverlayTrigger>
             </div>
             <div className="addLeave">
                 <FullCalendar
@@ -165,7 +165,7 @@ function AddLeave() {
                     headerToolbar={{
                         left: 'prev,next,today',
                         center: 'title',
-                        right: 'dayGridMonth'
+                        right: ''
                     }}
                     events={leaves}
                     eventContent={() => {
@@ -217,9 +217,9 @@ function AddLeave() {
                 /> */}
                 {/* <Button onClick={insertLeaves}> Submit Here</Button> */}
             </div>
-            
+
         </div>
-         
+
     )
 }
 

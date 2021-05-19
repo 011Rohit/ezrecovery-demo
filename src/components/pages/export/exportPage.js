@@ -11,7 +11,7 @@ const returnTodaysDate = () => {
 
 export default function CallExport() {
     const today = returnTodaysDate().toString()
-    Axios.post('http://localhost:3001/exportDetails', {
+    Axios.post('http://ezrecoveryapi.herokuapp.com/exportDetails', {
         today: today,
     }).then(resolve => {
     })

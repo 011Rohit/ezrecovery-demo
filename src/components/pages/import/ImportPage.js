@@ -12,14 +12,14 @@ function ImportPage() {
 
 
     const reqToInsert = filename => {
-        Axios.post('http://localhost:3001/insertRecords', {
+        Axios.post('http://ezrecoveryapi.herokuapp.com/insertRecords', {
             filename: filename,
         }).then(res => alert(res.data.msg))
             .catch(err => console.log(err.msg))
     }
 
     const reqToUpdate = filename => {
-        Axios.post('http://localhost:3001/updateRecords', {
+        Axios.post('http://ezrecoveryapi.herokuapp.com/updateRecords', {
             filename: filename,
         }).then(res => alert(res.data.msg))
             .catch(err => console.log(err.msg))

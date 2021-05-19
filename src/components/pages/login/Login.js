@@ -73,21 +73,21 @@ class Login extends Component {
     }
 
     handleType(event) {
-        // console.log("changing" + value)
+        console.log("changing" + event.target.value)
 
         this.setState({
-            type: event
+            type: event.target.value
         });
 
-        if (event === "1") {
-            this.setState({
-                role: "Admin"
-            });
-        } else if (event === "2") {
-            this.setState({
-                role: "Field staff"
-            });
-        }
+        // if (event === "1") {
+        //     this.setState({
+        //         role: "Admin"
+        //     });
+        // } else if (event === "2") {
+        //     this.setState({
+        //         role: "Field staff"
+        //     });
+        // }
     }
 
     async handleSubmit(event) {
@@ -98,7 +98,7 @@ class Login extends Component {
 
                 if (this.state.type === '1') {
                     const res = await Axios.post(
-                        'https://ezrecoveryapi.herokuapp.com/login',
+                        'http://ezrecoveryapi.herokuapp.com/login',
                         {
                             // method: "POST",
                             data: { username: this.state.username, password: this.state.password },
@@ -127,7 +127,7 @@ class Login extends Component {
 
 
                     const res = await Axios.post(
-                        'https://ezrecoveryapi.herokuapp.com/loginFieldStaff',
+                        'http://ezrecoveryapi.herokuapp.com/loginFieldStaff',
                         {
                             // method: "POST",
                             data: { username: this.state.username, password: this.state.password },
@@ -209,28 +209,37 @@ class Login extends Component {
 
                                         <div className="d-flex  justify-content-center align-items-center mt-4">
                                             <span className="fw-normal">
-                                                <Dropdown name="type" onSelect={this.handleType}>
+                                                {/* <Dropdown name="type" onSelect={this.handleType}>
                                                     <Dropdown.Toggle as={Button} variant="primary">
                                                         <FontAwesomeIcon icon={faClipboard} className="me-2" /> {this.state.role}
                                                         <span className="icon icon-small ms-1"><FontAwesomeIcon icon={faChevronDown} /></span>
                                                     </Dropdown.Toggle>
                                                     <Dropdown.Menu className="dashboard-dropdown dropdown-menu-left mt-1">
                                                         <Dropdown.Item eventKey="1">
-                                                            {/* <FontAwesomeIcon icon={faBoxOpen} className="me-2" /> */}
-                                                             Admin
+
+                                                            Admin
                         </Dropdown.Item>
                                                         <Dropdown.Item eventKey="2">
-                                                            {/* <FontAwesomeIcon icon={faStore} className="me-2" />  */}
+
                                                             Field-Staff
                         </Dropdown.Item>
-                                                        {/* <Dropdown.Divider /> */}
+
                                                     </Dropdown.Menu>
-                                                </Dropdown>
+                                                </Dropdown> */}
+
                                             </span>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1" onChange={this.handleType} />
+                                                <label class="form-check-label" for="inlineRadio1">Admin</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="2" onChange={this.handleType} />
+                                                <label class="form-check-label" for="inlineRadio2">Field Staff</label>
+                                            </div>
                                         </div>
                                         <Form className="mt-4">
                                             <Form.Group id="email" className="mb-4">
-                                                <Form.Label>Your Username</Form.Label>
+                                                <Form.Label>Username</Form.Label>
                                                 <InputGroup>
                                                     <InputGroup.Text>
                                                         {/* <FontAwesomeIcon icon={faEnvelope} /> */}
@@ -240,7 +249,7 @@ class Login extends Component {
                                             </Form.Group>
                                             <Form.Group>
                                                 <Form.Group id="password" className="mb-4">
-                                                    <Form.Label>Your Password</Form.Label>
+                                                    <Form.Label>Password</Form.Label>
                                                     <InputGroup>
                                                         <InputGroup.Text>
                                                             {/* <FontAwesomeIcon icon={faUnlockAlt} /> */}

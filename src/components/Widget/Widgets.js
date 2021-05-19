@@ -34,9 +34,9 @@ export const CounterWidget = (props) => {
             </div>
             <medium>{period}</medium>
             <div className="small mt-2">
-              <FontAwesomeIcon icon={percentageIcon} className={`${percentageColor} me-1`} />
+              {/* <FontAwesomeIcon icon={percentageIcon} className={`${percentageColor} me-1`} /> */}
               <span className={`${percentageColor} fw-bold`}>
-                {percentage} Rs
+                ₹ {percentage}
               </span>
             </div>
           </Col>

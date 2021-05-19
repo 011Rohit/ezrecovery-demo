@@ -34,7 +34,7 @@ export default class MyAllocation extends Component {
     async componentDidMount() {
         try {
             const res = await Axios.post(
-                'http://localhost:3001/MyAllocation',
+                'http://ezrecoveryapi.herokuapp.com/MyAllocation',
                 {
                     // method: "POST",
                     data: { field_staff_username: this.state.field_staff_username },
@@ -86,13 +86,11 @@ export default class MyAllocation extends Component {
     }
 
     async handleSubmit(event) {
-
-
-
-
     }
 
-
+    numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
 
     render() {
         return (
@@ -132,7 +130,7 @@ export default class MyAllocation extends Component {
 
                             if (item.category === 1) {
                                 return (
-                                    <Row className="justify-content-md-center" style={{cursor:'pointer'}}>
+                                    <Row className="justify-content-md-center" style={{ cursor: 'pointer' }}>
                                         {
                                             this.state.borrowerDetails.map(b => {
 
@@ -145,15 +143,12 @@ export default class MyAllocation extends Component {
                                                                 category={b.name}
                                                                 title={b.contact_no}
                                                                 period={b.address}
-                                                                percentage={b.debt_to_clear}
-
+                                                                percentage={this.numberWithCommas((b.debt_to_clear + b.charges).toFixed(2))}
                                                                 icon={faChartLine}
-
                                                                 iconColor="shape-secondary"
                                                             // faCashRegister, faChartLine, faCloudUploadAlt, faPlus, faRocket, faTasks, faUserShield
                                                             />
                                                         </Col>
-
                                                     )
                                                 }
 
@@ -216,7 +211,7 @@ export default class MyAllocation extends Component {
 
                             if (item.category === 2) {
                                 return (
-                                    <Row className="justify-content-md-center done"  style={{cursor:'pointer'}}>
+                                    <Row className="justify-content-md-center done" style={{ cursor: 'pointer' }}>
                                         {
                                             this.state.borrowerDetails.map(b => {
 
@@ -229,7 +224,7 @@ export default class MyAllocation extends Component {
                                                                 category={b.name}
                                                                 title={b.contact_no}
                                                                 period={b.address}
-                                                                percentage={b.debt_to_clear}
+                                                                percentage={this.numberWithCommas((b.debt_to_clear + b.charges).toFixed(2))}
                                                                 icon={faTasks}
                                                                 iconColor="shape-secondary"
                                                             />

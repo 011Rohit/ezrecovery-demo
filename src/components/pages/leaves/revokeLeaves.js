@@ -15,7 +15,7 @@ import { Button } from '@material-ui/core';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import moment from 'moment';
-import {  Tooltip, OverlayTrigger } from '@themesberg/react-bootstrap';
+import { Tooltip, OverlayTrigger } from '@themesberg/react-bootstrap';
 
 
 function Alert(props) {
@@ -55,7 +55,7 @@ function RevokeLeaves() {
 
     const revokeLeaves = () => {
         setOpen(false)
-        Axios.post('http://localhost:3001/revokeLeaves', {
+        Axios.post('http://ezrecoveryapi.herokuapp.com/revokeLeaves', {
             start: startDate,
             end: endDate,
             id: localStorage.getItem('id'),
@@ -75,7 +75,7 @@ function RevokeLeaves() {
     }
 
     useEffect(() => {
-        Axios.post('http://localhost:3001/getLeaves', {
+        Axios.post('http://ezrecoveryapi.herokuapp.com/getLeaves', {
             id: localStorage.getItem('id'),
         }).then(res => {
             setLeaves(res.data.data)
@@ -135,15 +135,15 @@ function RevokeLeaves() {
                 </Alert>
             </Snackbar>
             <div className="head">
-            <OverlayTrigger
-            placement="bottom"
-                trigger={['hover', 'focus']}
-                overlay={
-                    <Tooltip>Select/Drag Dates to revoke a leave(s)</Tooltip>
-                }>
-            <h5 >Revoke Leaves</h5>
-           </OverlayTrigger>
-            <h5>Leaves Left = {leftLeaves}</h5>
+                <h5 >Revoke Leaves</h5>
+                <OverlayTrigger
+                    placement="bottom"
+                    trigger={['hover', 'focus']}
+                    overlay={
+                        <Tooltip>You have {leftLeaves} leaves remaining out of 20 annual leaves</Tooltip>
+                    }>
+                    <h5>Leaves Left = {leftLeaves}/20</h5>
+                </OverlayTrigger>
             </div>
             <div className="addLeave">
                 <FullCalendar
@@ -154,7 +154,7 @@ function RevokeLeaves() {
                     headerToolbar={{
                         left: 'prev,next,today',
                         center: 'title',
-                        right: 'dayGridMonth'
+                        right: ''
                     }}
                     weekends={false}
                     events={leaves}

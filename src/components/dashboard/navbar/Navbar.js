@@ -62,7 +62,7 @@ export default (props) => {
             </Dropdown>
 
           </Nav>
-          <span className="mb-0 font-small fw-bold" color=''><DateTime /></span>
+          {/* <span className="mb-0 font-small fw-bold" color=''><DateTime /></span> */}
         </div>
       </Container>
     </Navbar>

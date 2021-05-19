@@ -11,6 +11,9 @@ import Popup from "../manage employees/Popup";
 import CloseIcon from '@material-ui/icons/Close';
 import Notification from "../manage employees/Notification";
 import ConfirmDialog from "../manage employees/ConfirmDialog";
+import { Form, InputGroup } from '@themesberg/react-bootstrap';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Axios from 'axios'
 
 const useStyles = makeStyles(theme => ({
@@ -34,7 +37,7 @@ const useStyles = makeStyles(theme => ({
 const headCells = [
     { id: 'name', label: 'Name' },
     { id: 'email', label: 'Email Address' },
-    { id: 'mobile', label: 'Mobile Number' },
+    { id: 'mobile', label: 'Contact No' },
     // { id: 'department', label: 'Location Preference' },
     { id: 'status', label: 'Status' },
     { id: 'actions', label: 'Actions', disableSorting: true }
@@ -52,7 +55,7 @@ export default function Employees() {
     const [tableState, setTableState] = useState(false)
     // setRecords(employeeService.getAllEmployees());
     useEffect(() => {
-        Axios.get('http://localhost:3001/getAllFieldStaffRecords')
+        Axios.get('http://ezrecoveryapi.herokuapp.com/getAllFieldStaffRecords')
             .then(res => {
                 console.log(res.data.data)
                 setRecords(res.data.data)
@@ -73,18 +76,25 @@ export default function Employees() {
             fn: items => {
                 if (target.value == "")
                     return items;
-                else
-                    return items.filter(x => x.name.toLowerCase().includes(target.value))
+                else {
+                    return items.filter(x => {
+                        if (x.name.toLowerCase().includes(target.value)) {
+                            return x
+                        }
+                        else if (x.email.toLowerCase().includes(target.value)) {
+                            return x
+                        }
+                        else if (x.contact_no.toLowerCase().includes(target.value)) {
+                            return x
+                        }
+                    })
+                }
             }
         })
     }
 
     const addOrEdit = (employee, resetForm) => {
-        // if (employee.id == 0)
-        //     employeeService.insertEmployee(employee)
-
-        //console.log(employee);
-        Axios.post('http://localhost:3001/insertFieldStaffRecords', {
+        Axios.post('http://ezrecoveryapi.herokuapp.com/insertFieldStaffRecords', {
             employee: employee
         }).then(res => {
             if (res.data.success) {
@@ -105,9 +115,6 @@ export default function Employees() {
         })
         resetForm()
         setOpenPopup(false)
-
-        //setRecords(employeeService.getAllEmployees())
-
     }
 
     const openInPopup = item => {
@@ -119,9 +126,8 @@ export default function Employees() {
             ...confirmDialog,
             isOpen: false
         })
-        // employeeService.deleteEmployee(id);
-        // setRecords(employeeService.getAllEmployees())
-        Axios.post('http://localhost:3001/deleteFieldStaff', {
+
+        Axios.post('http://ezrecoveryapi.herokuapp.com/deleteFieldStaff', {
             id: id
         }).then(res => {
             if (res.data.success)
@@ -137,21 +143,17 @@ export default function Employees() {
     return (
         <>
             <PageHeader
-                title="Add/Delete Field-Staff"
+            // title="Add/Delete Field-Staff"
             />
             <Paper className={classes.pageContent}>
 
                 <Toolbar>
-                    <Controls.Input
-                        label="Search Field-Staff"
-                        className={classes.searchInput}
-                        InputProps={{
-                            startAdornment: (<InputAdornment position="start">
-                                <Search />
-                            </InputAdornment>)
-                        }}
-                        onChange={handleSearch}
-                    />
+                    <InputGroup style={{ width: "40rem", fontWeight: 'bold' }}>
+                        <InputGroup.Text>
+                            <FontAwesomeIcon icon={faSearch} />
+                        </InputGroup.Text>
+                        <Form.Control type="text" placeholder="Search by Name, Email or Contact Number " onChange={handleSearch} />
+                    </InputGroup>
                     <Controls.Button
                         text="Add New"
                         variant="outlined"
@@ -172,7 +174,6 @@ export default function Employees() {
                                 <TableCell>{item.contact_no}</TableCell>
                                 <TableCell>{item.status}</TableCell>
                                 <TableCell>
-
                                     <Controls.ActionButton
                                         color="secondary"
                                         onClick={() => {
@@ -199,7 +200,6 @@ export default function Employees() {
                 setOpenPopup={setOpenPopup}
             >
                 <EmployeeForm
-
                     addOrEdit={addOrEdit} />
             </Popup>
             <Notification

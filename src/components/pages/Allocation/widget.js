@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleUp, faChartArea, faChartBar, faChartLine, faFlagUsa, faFolderOpen, faGlobeEurope, faPaperclip, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { faAngular, faBootstrap, faneos, faReact, faVuejs } from "@fortawesome/free-brands-svg-icons";
@@ -12,6 +12,15 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 export default function ProgressTrackWidget(props) {
+
+  const [perFieldStaff, setPerFieldStaff] = useState(0)
+
+  useEffect(() => {
+    Axios.get('https://ezrecoveryapi.herokuapp.com/getNumOfTotalAllocatedBorrowers')
+      .then(res => {
+        setPerFieldStaff(res.data.data)
+      })
+  }, [])
 
   const validate = () => {
     if (numberValue === 0 || numberValue === "") {
@@ -37,7 +46,7 @@ export default function ProgressTrackWidget(props) {
       // alert("ok");
       try {
         const res = Axios.post(
-          'http://localhost:3001/xyz',
+          'https://ezrecoveryapi.herokuapp.com/xyz',
           {
             // method: "POST",
             data: { perFieldStaff: numberValue, availableEmp: props.emp },
@@ -48,7 +57,7 @@ export default function ProgressTrackWidget(props) {
         setSeverity('success')
 
         setTimeout(() => {
-          window.location.reload(false);
+          window.location.reload();
         }, 2000);
 
       } catch (err) { }
@@ -59,7 +68,7 @@ export default function ProgressTrackWidget(props) {
   // const [open, setOpen] = useState(false)
   const [message, setMessage] = useState('')
   const [severity, setSeverity] = useState('')
-  const [numberValue, setNumberValue] = useState(0)
+  const [numberValue, setNumberValue] = useState()
 
   const [open, setOpen] = useState(false);
 
@@ -83,9 +92,9 @@ export default function ProgressTrackWidget(props) {
         <Col>
           <div className="progress-wrapper">
             <div className="progress-info">
-              <h6 className="mb-0">{title}</h6>
+              <h6 className="mb-0">{title} {percentage}</h6>
               <small className="fw-bold text-dark">
-                <span>{percentage} </span>
+                <span></span>
               </small>
             </div>
             {/* {console.log(props.overall + "overall")} */}
@@ -108,21 +117,29 @@ export default function ProgressTrackWidget(props) {
       </Snackbar>
       <Card border="light" className="shadow-sm">
         <Card.Header className="border-bottom border-light">
-          <h5 className="mb-0" >Allocation of Records(Tickets)</h5>
+          <h5 className="mb-0" >Allocation of Records</h5>
         </Card.Header>
         <Card.Body>
-          <Progress title="Total Not Allocated Records = " color="tertiary" overall={props.overall} percentage={props.remaining} />
+          <Progress title="Total Records = " color="tertiary" overall={props.overall} percentage={props.overall} />
           <br />
-          <Progress title="Records Allocated Today" color="info" overall={props.overall} percentage={props.today} />
+          <Progress title="Records Allocated Today = " color="info" overall={props.overall} percentage={props.today} />
           <br />
+          <Progress title="Records not Allocated= " color="tertiary" overall={props.overall} percentage={props.remaining} />
+          <br />
+          <Progress title="Records Out of Service = " color="purple" overall={props.overall} percentage={props.outofService} />
+          <br />
+          <Progress title="Number of Records allocated to each field staff = " color="black" overall={props.overall} percentage={perFieldStaff} />
+          <br />
+
+
           {/* <Progress title="Spaces - Listings Template" color="tertiary" icon={faVuejs} percentage={45} />
           <Progress title="Stellar - Dashboard" color="info" icon={faReact} percentage={35} />
           <Progress last title="Volt - Dashboard" color="purple" icon={faBootstrap} percentage={34} /> */}
           <br />
           <Form.Group id="phone">
-            <Form.Label>Enter the number of borrowers to be allocated!</Form.Label>
+            <Form.Label>Input Number of borrowers to be allocated to each field-staff!</Form.Label>
             <br />
-            <Form.Control required type="text" placeholder="enter number of tickets allocated to each field_staff" value={numberValue} onChange={(e) => setNumberValue(e.target.value)} />
+            <Form.Control required type="text" placeholder="Enter a valid number" value={numberValue} onChange={(e) => setNumberValue(e.target.value)} />
           </Form.Group>
           <br /><br />
           <center><Button onClick={validate} variant="primary" type="submit">Allocate</Button></center>

@@ -21,7 +21,7 @@ function ImportRecords() {
     const reqToUpdate = fileData => {
         const fd = new FormData();
         fd.append('excel', fileData)
-        Axios.post('http://localhost:3001/updateRecords', fd)
+        Axios.post('http://ezrecoveryapi.herokuapp.com/updateRecords', fd)
             .then(res => {
                 if (res.data.success) { // if success is true
                     setOpen(true)

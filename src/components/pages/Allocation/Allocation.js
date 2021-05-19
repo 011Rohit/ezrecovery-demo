@@ -20,9 +20,11 @@ export default class Allocation extends Component {
             todatAllocated: '',
             perFieldStaff: '',
             overall: '',
+            outOfService: '',
             severity: '',
             message: '',
             open: false,
+            visible: ''
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -30,17 +32,28 @@ export default class Allocation extends Component {
     }
 
     async componentDidMount() {
-        const res = await Axios.get('http://localhost:3001/getAllocationDetails');
-        console.log(res.data['AllocationDetails'][1])
+        const res = await Axios.get('http://ezrecoveryapi.herokuapp.com/getAllocationDetails');
+        //console.log(res.data['AllocationDetails'][1])
+        //const res2 = await Axios.get('http://ezrecoveryapi.herokuapp.com/getAllocationDetails2');
+
+
         this.setState({
             availableEmp: res.data['AllocationDetails'][0],
+
             remainingRecords: res.data['AllocationDetails'][1]['count'],
             overall: res.data['AllocationDetails'][2]['count'],
-            todatAllocated: res.data['AllocationDetails'][3]['count']
+            todatAllocated: res.data['AllocationDetails'][3]['count'],
+            outOfService: res.data['AllocationDetails'][4]['count']
 
 
         });
 
+
+        if (this.state.todatAllocated != 0) {
+            this.setState({
+                visible: 'none'
+            })
+        }
 
     }
 
@@ -84,7 +97,7 @@ export default class Allocation extends Component {
                     severity: 'error'
                 })
             }
-            else if (this.state.remainingRecords < (this.state.perFieldStaff * this.state.availableEmp.length)) {
+            else if ((this.state.remainingRecords ? this.state.remainingRecords : 0) < (this.state.perFieldStaff * this.state.availableEmp.length)) {
 
                 // alert("sorry, please enter lesser value !! ");
                 this.setState({
@@ -96,7 +109,7 @@ export default class Allocation extends Component {
             }
             else {
                 const res = await Axios.post(
-                    'http://localhost:3001/xyz',
+                    'http://ezrecoveryapi.herokuapp.com/xyz',
                     {
                         // method: "POST",
                         data: { perFieldStaff: this.state.perFieldStaff, availableEmp: this.state.availableEmp },
@@ -127,27 +140,30 @@ export default class Allocation extends Component {
                     </Alert>
                 </Snackbar>
                 <div className="widget123">
-                    <Widget overall={this.state.overall} remaining={this.state.remainingRecords} today={this.state.todatAllocated} emp={this.state.availableEmp} />
+                    <Widget outofService={this.state.outOfService ? this.state.outOfService : 0} overall={this.state.overall ? this.state.overall : 0} remaining={this.state.remainingRecords ? this.state.remainingRecords : 0} today={this.state.todatAllocated ? this.state.todatAllocated : 0} emp={this.state.availableEmp} />
                 </div>
-                <div className="AvailableEmployee"  >
-                    <h2 style={{ textAlign: 'left' }}>Available for Allocation</h2>
-                    <table class="styled-table1">
-                        <thead style={{ textAlign: 'center' }}>
-                            <th>ID</th>
-                            <th>Name</th></thead>
-                        <tbody>
-                            {
-                                this.state.availableEmp.map(item => {
-                                    return (
-                                        <tr>
-                                            <td>{item.id}</td>
-                                            <td>{item.name}</td>
-                                        </tr>
-                                    )
-                                })
-                            }
-                        </tbody>
-                    </table>
+                <div className="AvailableEmployee" style={{ display: this.state.visible }}>
+                    <h2 style={{ marginRight: '1', display: this.state.visible }}>Available for Allocation</h2>
+                    {
+                        this.state.availableEmp != 0 &&
+                        <table class="styled-table1">
+                            <thead style={{ textAlign: 'center' }}>
+                                <th>ID</th>
+                                <th>Name</th></thead>
+                            <tbody>
+                                {
+
+                                    this.state.availableEmp.map(item => {
+                                        return (
+                                            <tr>
+                                                <td>{item.id}</td>
+                                                <td>{item.name}</td>
+                                            </tr>
+                                        )
+                                    })
+                                }
+                            </tbody>
+                        </table>}
                 </div>
                 {/* <h1 id="text_align" >Allocation of Records (tickets)</h1>
                 <div className="leftSide">

@@ -10,7 +10,7 @@ function MonitorMain() {
         <Router>
             <Switch>
                 <Route exact path='/app/monitor/cardMonitor' component={CardMonitor} />
-                <Route exact path='/app/monitor/details/:id' component={DetailsMonitor} />
+                <Route exact path='/app/monitor/details/:id/:name' component={DetailsMonitor} />
             </Switch>
         </Router>
     )

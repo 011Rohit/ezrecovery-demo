@@ -8,10 +8,14 @@ import { faCheck, faCog, faHome, faSearch } from '@fortawesome/free-solid-svg-ic
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button } from '@themesberg/react-bootstrap';
 import ImportRecords from './importRecords'
+import MuiTable from './muitable'
 
 
 export default class View_records extends Component {
 
+    numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
 
 
     constructor(props) {
@@ -25,7 +29,9 @@ export default class View_records extends Component {
             ofs: 'none',
             all: 'none',
             dataState: false,
-
+            unallocatedRecords: [],
+            allocatedRecords: [],
+            outOfServiceRecords: []
         };
 
         this.display = this.display.bind(this);
@@ -33,9 +39,55 @@ export default class View_records extends Component {
 
     }
 
+    async getArrays(records) {
+        let unallocated = []
+        let allocated = []
+        let oos = []
+        records.map(borrower => {
+            if (borrower.category == 1) {
+                let value = {
+                    id: borrower.id,
+                    name: borrower.name,
+                    bank_name: borrower.bank_name,
+                    address: borrower.address,
+                    contact_no: borrower.contact_no,
+                    debt_to_clear: borrower.debt_to_clear,
+                    charges: borrower.charges
+                }
+                unallocated.push(value)
+            }
+            else if (borrower.category == 2) {
+                let value = {
+                    id: borrower.id,
+                    name: borrower.name,
+                    bank_name: borrower.bank_name,
+                    address: borrower.address,
+                    contact_no: borrower.contact_no,
+                    debt_to_clear: borrower.debt_to_clear,
+                    charges: borrower.charges
+                }
+                allocated.push(value)
+            }
+            else if (borrower.category == 3) {
+                let value = {
+                    id: borrower.id,
+                    name: borrower.name,
+                    bank_name: borrower.bank_name,
+                    address: borrower.address,
+                    contact_no: borrower.contact_no,
+                    debt_to_clear: borrower.debt_to_clear,
+                    charges: borrower.charges
+                }
+                oos.push(value)
+            }
+        })
+        return { unallocated, allocated, oos }
+    }
+
     async componentDidMount() {
-        const res = await Axios.get('http://localhost:3001/getAllRecords');
-        console.log(res)
+
+        const res = await Axios.get('http://ezrecoveryapi.herokuapp.com/getAllRecords');
+        //console.log(res)
         if (res.data.records) {
             this.setState({
                 dataState: true
@@ -46,8 +98,12 @@ export default class View_records extends Component {
             data: res.data.records,
         });
 
-
-        console.log("data =", this.state.records)
+        const result = await this.getArrays(res.data.records)
+        this.setState({
+            allocatedRecords: result.allocated,
+            unallocatedRecords: result.unallocated,
+            outOfServiceRecords: result.oos
+        })
     }
 
     display(event) {
@@ -59,7 +115,6 @@ export default class View_records extends Component {
                 remaining: ''
             })
         } else if (event.target.innerText === 'Allocated') {
-
             this.setState({
                 allocated: '',
                 ofs: 'none',
@@ -75,9 +130,7 @@ export default class View_records extends Component {
         }
     }
 
-    searchData(p) {
-        const pattern = p.target.value;
-
+    searchData(pattern) {
         if (!pattern) {
             this.setState({
                 data: this.state.records,
@@ -145,9 +198,9 @@ export default class View_records extends Component {
 
 
     render() {
+
         return (
             <>
-
                 {this.state.dataState &&
                     <div className="view_record_wrapper">
                         <ImportRecords />
@@ -155,7 +208,7 @@ export default class View_records extends Component {
                             <Tab.Container defaultActiveKey="unallocated">
                                 <Nav fill variant="pills" className="flex-column flex-sm-row">
                                     <Nav.Item>
-                                        <Nav.Link onClick={this.display} eventKey="unallocated" className="mb-sm-3 mb-md-0" >
+                                        <Nav.Link onClick={this.display} eventKey="unallocated" className="mb-sm-3 mb-md-0">
                                             Unallocated
                                 </Nav.Link>
                                     </Nav.Item>
@@ -177,7 +230,7 @@ export default class View_records extends Component {
                                 <InputGroup.Text>
                                     <FontAwesomeIcon icon={faSearch} />
                                 </InputGroup.Text>
-                                <Form.Control type="text" onChange={(e) => this.searchData(e)} placeholder="Search" />
+                                <Form.Control type="text" onChange={(e) => this.searchData(e.target.value)} placeholder="Search by Name or Loan Number" />
                             </InputGroup>
                             {/* <span className="SearchSpan">
                         <FaSearch />
@@ -189,15 +242,12 @@ export default class View_records extends Component {
                         placeholder="type Loan no or name to search"
                     /> */}
                         </div>
-
                         {/*-------------------- for unallocate------------------- */}
 
                         <div style={{ display: this.state.remaining }} >
-
-
-
                             <table class="styled-table">
-                                <thead>
+                                <MuiTable viewRecordsArray={this.state.unallocatedRecords} />
+                                {/* <thead>
                                     <tr>
                                         <th>Loan No.</th>
                                         <th>Name</th>
@@ -209,10 +259,9 @@ export default class View_records extends Component {
 
                                         <th>Charges</th>
                                         <th>Status</th>
-                                        {/* <th>category</th> */}
                                     </tr>
-                                </thead>
-                                <tbody>
+                                </thead> */}
+                                {/* <tbody>
 
                                     {
                                         this.state.records.map(borrower => {
@@ -232,18 +281,15 @@ export default class View_records extends Component {
                                                         <td>{borrower.contact_no}</td>
                                                         <td>{borrower.debt_to_clear}</td>
                                                         <td>{borrower.charges}</td>
-                                                        <td>{borrower.status}</td>
-                                                        {/* <td>{borrower.category}</td> */}
-
-
-                                                    </tr>
-                                                )
+                                                        <td>{borrower.status}</td> */}
+                                {/* </tr> */}
+                                {/* )
                                             }
                                         })
                                     }
                                     <b>{this.state.temp ? 'There is no data ' : ''}</b>
 
-                                </tbody>
+                                </tbody> */}
                             </table>
                         </div>
                         {/*--------- /*for allocated ------------------- */}
@@ -253,7 +299,8 @@ export default class View_records extends Component {
 
 
                             <table class="styled-table">
-                                <thead>
+                                <MuiTable viewRecordsArray={this.state.allocatedRecords} />
+                                {/* <thead>
                                     <tr>
                                         <th>Loan No.</th>
                                         <th>Name</th>
@@ -265,7 +312,7 @@ export default class View_records extends Component {
 
                                         <th>Charges</th>
                                         <th>Status</th>
-                                        {/* <th>category</th> */}
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -289,9 +336,6 @@ export default class View_records extends Component {
                                                         <td>{borrower.debt_to_clear}</td>
                                                         <td>{borrower.charges}</td>
                                                         <td>{borrower.status}</td>
-                                                        {/* <td>{borrower.category}</td> */}
-
-
                                                     </tr>
                                                 )
                                             }
@@ -299,7 +343,7 @@ export default class View_records extends Component {
                                     }
                                     <b>{this.state.temp ? 'There is no data ' : ''}</b>
 
-                                </tbody>
+                                </tbody> */}
                             </table>
                         </div>
 
@@ -313,7 +357,8 @@ export default class View_records extends Component {
 
 
                             <table class="styled-table">
-                                <thead>
+                                <MuiTable viewRecordsArray={this.state.outOfServiceRecords} />
+                                {/* <thead>
                                     <tr>
                                         <th>Loan No.</th>
                                         <th>Name</th>
@@ -325,7 +370,7 @@ export default class View_records extends Component {
 
                                         <th>Charges</th>
                                         <th>Status</th>
-                                        {/* <th>category</th> */}
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -349,9 +394,6 @@ export default class View_records extends Component {
                                                         <td>{borrower.debt_to_clear}</td>
                                                         <td>{borrower.charges}</td>
                                                         <td>{borrower.status}</td>
-                                                        {/* <td>{borrower.category}</td> */}
-
-
                                                     </tr>
                                                 )
                                             }
@@ -359,7 +401,7 @@ export default class View_records extends Component {
                                     }
                                     <b>{this.state.temp ? 'There is no data ' : ''}</b>
 
-                                </tbody>
+                                </tbody> */}
                             </table>
                         </div>
 

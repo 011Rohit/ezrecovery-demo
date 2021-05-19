@@ -1,6 +1,6 @@
 .Allocation_wrapper{
    display: flex;
-   justify-content: center;
+   justify-content: space-between;
    align-items:center;
    margin-top: 2rem;
    /* padding: 10px;
@@ -11,23 +11,23 @@
       text-align: center;
   }
   .widget123{
-      margin-left: 17rem;
+      margin-left: 20rem;
   }
 /* .h2{
       left: 60px;
   }  */
   /*--------------table style ---------------*/
 
-  .AvailableEmployee{
+  /* .AvailableEmployee{
     margin-left: 20rem;
-  }
-  .leftSide{
+  } */
+  /* .leftSide{
       float: left;
       margin-left: 12%;
       margin-top: 5%;
       width: 600px;
     
-  }
+  } */
 
   .headingElement{
       /* margin: 20px 5px; */
@@ -50,7 +50,9 @@
 
 /* -----------table style------------------*/
   .styled-table1 {
+    margin-right: 12rem;
     background-color: rgb(255, 255, 255);   
+    width: 300px;
 }
 .h5{
     background-color: #2b3149;

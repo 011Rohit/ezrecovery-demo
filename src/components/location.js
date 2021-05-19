@@ -24,6 +24,10 @@ import { Col, Row, Button, Container, Dropdown, ButtonGroup } from '@themesberg/
 import Axios from 'axios'
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import { Link } from 'react-router-dom';
+import { Routes } from "../routes";
+import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -103,8 +107,9 @@ function EnhancedTableHead(props) {
             inputProps={{ 'aria-label': 'select all desserts' }}
           />
         </TableCell>
+
         {headCells.map((headCell) => (
-          <TableCell
+          <TableHead
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'default'}
@@ -122,7 +127,7 @@ function EnhancedTableHead(props) {
                 </span>
               ) : null}
             </TableSortLabel>
-          </TableCell>
+          </TableHead>
         ))}
       </TableRow>
     </TableHead>
@@ -233,7 +238,7 @@ export default function EnhancedTable() {
   const [severity, setSeverity] = useState('')
 
   useEffect(async () => {
-    Axios.post('http://localhost:3001/getAllLocation',
+    Axios.post('http://ezrecoveryapi.herokuapp.com/getAllLocation',
       {
         id: localStorage.getItem('id')
       })
@@ -310,7 +315,7 @@ export default function EnhancedTable() {
     }
     else {
       // console.log(localStorage.getItem('id'))
-      Axios.post('http://localhost:3001/setLocations', {
+      Axios.post('http://ezrecoveryapi.herokuapp.com/setLocations', {
         id: localStorage.getItem('id'),
         locations: selected
       })
@@ -347,7 +352,7 @@ export default function EnhancedTable() {
         </Alert>
       </Snackbar>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length === 0 ? 0 : selected.length} />
         <TableContainer>
           <Table
             className={classes.table}
@@ -357,7 +362,7 @@ export default function EnhancedTable() {
           >
             <EnhancedTableHead
               classes={classes}
-              numSelected={selected.length}
+              numSelected={selected.length === 0 ? 0 : selected.length}
               order={order}
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
@@ -391,10 +396,6 @@ export default function EnhancedTable() {
                       <TableCell component="th" id={labelId} scope="row" padding="checkbox" color="#262B40">
                         {row.name}
                       </TableCell>
-                      {/* <TableCell align="right">{row.calories}</TableCell>
-                      <TableCell align="right">{row.fat}</TableCell>
-                      <TableCell align="right">{row.carbs}</TableCell>
-                      <TableCell align="right">{row.protein}</TableCell> */}
                     </TableRow>
                   );
                 })}
@@ -406,17 +407,8 @@ export default function EnhancedTable() {
             </TableBody>
           </Table>
         </TableContainer>
-        {/* <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        /> */}
-
-        <Button marginLeft="30rem" variant="gray" className="m-1" align="center" onClick={updatePreference}>Done</Button>
+        <Button as={Link} marginLeft="30rem" variant="gray" className="m-1" align="center" to={Routes.Myallocation.path}>Back</Button>
+        <Button marginLeft="30rem" variant="gray" className="m-1" align="center" onClick={updatePreference}>Save</Button>
       </Paper>
       {/* <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}

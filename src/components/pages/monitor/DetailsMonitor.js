@@ -56,12 +56,13 @@ export default function DetailsMonitor(props) {
 
     //console.log(props.match.params.id)
     const id = props.match.params.id
+    const name = props.match.params.name
 
     const [details, setDetails] = useState([])
     const [total, setTotal] = useState(0)
 
     useEffect(() => {
-        Axios.post('http://localhost:3001/getDetailsForPerticularFieldStaff', {
+        Axios.post('http://ezrecoveryapi.herokuapp.com/getDetailsForPerticularFieldStaff', {
             id: id
         })
             .then(res => {
@@ -78,36 +79,40 @@ export default function DetailsMonitor(props) {
 
     const classes = useStyles();
 
+    const numberWithCommas = (x) => {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
     return (
         <center>
-            <TableContainer className={classes.tablecontainer} component={Paper}>
-
+            <h4>Details Showing for : {name}</h4>
+            <TableContainer className={classes.tablecontainer}>
                 <Table className={classes.table} aria-label="customized table" >
                     <TableHead>
                         <TableRow>
-                            <StyledTableCell align="center">Loan No.</StyledTableCell>
-                            <StyledTableCell align="center">Name</StyledTableCell>
-                            <StyledTableCell align="center">Bank Name</StyledTableCell>
-                            <StyledTableCell align="center">Total Debt(in Rs.)</StyledTableCell>
-                            <StyledTableCell align="center">Collected Debt (in Rs.)</StyledTableCell>
-                            <StyledTableCell align="center">Status</StyledTableCell>
+                            <StyledTableCell align="right">Loan No.</StyledTableCell>
+                            <StyledTableCell align="left">Name</StyledTableCell>
+                            <StyledTableCell align="left">Bank Name</StyledTableCell>
+                            <StyledTableCell align="right">Total Debt (₹)</StyledTableCell>
+                            <StyledTableCell align="right">Collected Debt (₹)</StyledTableCell>
+                            <StyledTableCell align="left">Status</StyledTableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {details.map((detail) => (
                             <StyledTableRow key={detail.id}>
-                                <StyledTableCell align="center">{detail.id}</StyledTableCell>
-                                <StyledTableCell align="center">{detail.name}</StyledTableCell>
-                                <StyledTableCell align="center">{detail.bank_name}</StyledTableCell>
-                                <StyledTableCell align="center">{detail.totalDebt}</StyledTableCell>
-                                <StyledTableCell align="center">{detail.collected}</StyledTableCell>
-                                <StyledTableCell align="center">{detail.status}</StyledTableCell>
+                                <StyledTableCell align="right">{detail.id}</StyledTableCell>
+                                <StyledTableCell align="left">{detail.name}</StyledTableCell>
+                                <StyledTableCell align="left">{detail.bank_name}</StyledTableCell>
+                                <StyledTableCell align="right">{numberWithCommas(detail.totalDebt.toFixed(2))}</StyledTableCell>
+                                <StyledTableCell align="right">{numberWithCommas(detail.collected.toFixed(2))}</StyledTableCell>
+                                <StyledTableCell align="left">{detail.status}</StyledTableCell>
                             </StyledTableRow>
                         ))}
                     </TableBody>
                     <TableFooter>
                         <TableRow>
-                            <StyledTableCell>Total Collected Amount = {total}</StyledTableCell>
+                            <StyledTableCell><b>Total : ₹ {numberWithCommas(total.toFixed(2))}</b></StyledTableCell>
                         </TableRow>
                     </TableFooter>
                 </Table>

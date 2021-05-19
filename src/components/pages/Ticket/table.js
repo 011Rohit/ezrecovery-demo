@@ -13,6 +13,9 @@ import { faSignOutAlt, faBoxOpen, faCartArrowDown, faChartPie, faChevronDown, fa
 import { Col, Row, Button, Dropdown, ButtonGroup, Card, Nav, Tab, Form, InputGroup } from '@themesberg/react-bootstrap';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import { Link } from 'react-router-dom';
+import { Routes } from "../../../routes";
+import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -75,7 +78,7 @@ export default function BasicTable(props) {
       try {
 
         const res = Axios.post(
-          'http://localhost:3001/updateStatus',
+          'http://ezrecoveryapi.herokuapp.com/updateStatus',
           {
 
             data: { Borrower_id: localStorage.getItem('borrower_id'), status: status, special_note: special_note },
@@ -93,6 +96,10 @@ export default function BasicTable(props) {
     }
   }
 
+  const numberWithCommas = (x) => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
   return (
     <TableContainer component={Paper}>
       {console.log(props.Data)}
@@ -108,7 +115,6 @@ export default function BasicTable(props) {
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell align="right">Details</TableCell>
             <TableCell align="center"></TableCell>
             {/* <TableCell align="right">Fat&nbsp;(g)</TableCell>
             <TableCell align="right">Carbs&nbsp;(g)</TableCell>
@@ -119,38 +125,41 @@ export default function BasicTable(props) {
           {props.Data.map((row) => (
             <>
               <TableRow key={row.id}>
-                <TableCell component="th" scope="row"> Loan No </TableCell>
-                <TableCell align="center">{row.id}</TableCell>
+                <TableCell align="left" component="th" scope="row"> Loan No </TableCell>
+                <TableCell align="right">{row.id}</TableCell>
               </TableRow>
               <TableRow key={2}>
                 <TableCell component="th" scope="row"> Name </TableCell>
-                <TableCell align="center">{row.name}</TableCell>
+                <TableCell align="right">{row.name}</TableCell>
               </TableRow>
               <TableRow key={3}>
                 <TableCell component="th" scope="row"> Bank Name </TableCell>
-                <TableCell align="center">{row.bank_name}</TableCell>
+                <TableCell align="right">{row.bank_name}</TableCell>
               </TableRow>
               <TableRow key={4}>
                 <TableCell component="th" scope="row"> Contact No </TableCell>
-                <TableCell align="center">{row.contact_no}</TableCell>
+                <TableCell align="right">+91-{row.contact_no}</TableCell>
               </TableRow>
               <TableRow key={5}>
                 <TableCell component="th" scope="row"> Alternate no </TableCell>
-                <TableCell align="center">{row.contact_no_1}</TableCell>
+                <TableCell align="right">+91-{row.contact_no_1}</TableCell>
               </TableRow>
               <TableRow key={6}>
                 <TableCell component="th" scope="row"> Debt </TableCell>
-                <TableCell align="center">{row.debt_to_clear}</TableCell>
+                <TableCell align="right">₹ {numberWithCommas(row.debt_to_clear.toFixed(2))}</TableCell>
               </TableRow>
               <TableRow key={7}>
                 <TableCell component="th" scope="row"> Charges </TableCell>
-                <TableCell align="center">{row.charges}</TableCell>
+                <TableCell align="right">₹ {numberWithCommas(row.charges.toFixed(2))}</TableCell>
               </TableRow>
-
+              <TableRow key={9}>
+                <TableCell component="th" scope="row"> Total Debt </TableCell>
+                <TableCell align="right">₹ {numberWithCommas((row.debt_to_clear + row.charges).toFixed(2))}</TableCell>
+              </TableRow>
               <TableRow key={8}>
                 <TableCell component="th" scope="row"> Status </TableCell>
                 <TableCell align="right">
-                  <div className="d-flex">
+                  <div className="d-flex" style={{ marginLeft: "10rem" }}>
                     <Dropdown name="status" required onSelect={handleSelect}>
                       <Dropdown.Toggle as={Button} variant="primary">
                         <FontAwesomeIcon className="me-2" value="" align="right" /> {status}
@@ -175,15 +184,20 @@ export default function BasicTable(props) {
               <TableRow key={8}>
                 <TableCell component="th" scope="row"> Special Note </TableCell>
                 <TableCell align="center">
-                  Special Note :  <textarea rows="2" cols="40" name="special_note" required onChange={handleChange}> </textarea>
+                  <textarea rows="3" cols="40" name="special_note" required onChange={handleChange}> </textarea>
                 </TableCell>
               </TableRow>
               <TableRow key={8}>
                 <TableCell align="center"></TableCell>
 
                 <TableCell component="th" scope="row">
+                  <Button as={Link} variant="primary" className="animate-hover" to={Routes.Myallocation.path}>
+                    <FontAwesomeIcon icon={faChevronLeft} className="animate-left-3 me-3 ms-2" />
+                  Back
+                </Button>
+                  -
+                  <Button variant="primary" size="large" className="me-2" onClick={handleSubmit} >Done</Button>
 
-                  <Button variant="primary" size="large" className="me-2" onClick={handleSubmit} >   Done  </Button>
                 </TableCell>
               </TableRow>
             </>
